@@ -13,7 +13,7 @@ export default function Leaderboard() {
         .from('submissions')
         .select('*')
         .order('tests_passed', { ascending: false })
-        .limit(10);
+        .limit(5); // Show fewer items for cleaner UI
       if (data) setScores(data);
     };
     fetchScores();
@@ -22,7 +22,7 @@ export default function Leaderboard() {
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'submissions' }, (payload) => {
         setScores((prev) => {
           const newScores = [...prev, payload.new];
-          return newScores.sort((a, b) => b.tests_passed - a.tests_passed).slice(0, 10);
+          return newScores.sort((a, b) => b.tests_passed - a.tests_passed).slice(0, 5);
         });
       })
       .subscribe();
@@ -31,28 +31,41 @@ export default function Leaderboard() {
   }, []);
 
   return (
-    <div className='w-full max-w-2xl border border-zinc-800 bg-zinc-900/30 backdrop-blur-md rounded-lg overflow-hidden'>
-      <div className='p-4 border-b border-zinc-800 flex justify-between items-center'>
-        <h2 className='text-[#00ff9d] font-mono text-lg tracking-widest'>LIVE // RANKING</h2>
-        <div className='h-2 w-2 bg-red-500 rounded-full animate-pulse' />
-      </div>
-      <div>
-        <AnimatePresence>
-          {scores.map((score, index) => (
-            <motion.div
-              key={score.id}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              className='flex justify-between p-4 border-b border-zinc-800/50 font-mono text-sm'
-            >
-              <span className='text-zinc-500'>#{index + 1}</span>
-              <span className='text-white font-bold'>{score.github_handle}</span>
-              <span className='text-[#00ff9d]'>{score.tests_passed}/{score.total_tests}</span>
-            </motion.div>
-          ))}
-        </AnimatePresence>
-        {scores.length === 0 && <div className='p-8 text-center text-zinc-600 font-mono'>System awaiting input...</div>}
-      </div>
+    <div className="space-y-1">
+      <AnimatePresence>
+        {scores.map((score, index) => (
+          <motion.div
+            key={score.id}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex items-center justify-between py-2 border-b border-zinc-800/50 last:border-0 text-sm"
+          >
+            <div className="flex items-center gap-3">
+              <span className="font-mono text-zinc-600 w-4">{index + 1}</span>
+              <div className="flex items-center gap-2">
+                <div className="w-5 h-5 rounded-full bg-zinc-800 flex items-center justify-center text-[10px] text-zinc-400">
+                  {score.github_handle?.slice(0,1)}
+                </div>
+                <span className="text-zinc-300 font-medium">{score.github_handle}</span>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className={`px-1.5 py-0.5 rounded text-[10px] font-medium ${
+                score.tests_passed === score.total_tests
+                  ? 'bg-emerald-500/10 text-emerald-500'
+                  : 'bg-zinc-800 text-zinc-400'
+              }`}>
+                {score.tests_passed}/{score.total_tests} passed
+              </span>
+            </div>
+          </motion.div>
+        ))}
+      </AnimatePresence>
+      {scores.length === 0 && (
+        <div className="py-4 text-center text-xs text-zinc-500">
+          No active simulations...
+        </div>
+      )}
     </div>
   );
 }

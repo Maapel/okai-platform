@@ -1,7 +1,7 @@
 'use client';
 import { createClient } from '@/utils/supabase/client';
 import Leaderboard from '@/components/Leaderboard';
-import { Terminal, Github, BarChart3 } from 'lucide-react';
+import { Terminal, ArrowRight, Activity, ShieldCheck, Users } from 'lucide-react';
 
 export default function Home() {
   const supabase = createClient();
@@ -9,139 +9,168 @@ export default function Home() {
   const handleLogin = async () => {
     await supabase.auth.signInWithOAuth({
       provider: 'github',
-      options: { redirectTo: typeof window !== 'undefined' ? `${window.location.origin}/auth/callback` : undefined }
+      options: { redirectTo: `${location.origin}/auth/callback` }
     });
   };
 
   return (
-    <div className='min-h-screen bg-[#050505] text-[#ededed] font-mono overflow-hidden relative'>
-      {/* Scanlines Overlay */}
-      <div className='fixed inset-0 pointer-events-none z-50'>
-        <div className='scanlines' />
-      </div>
+    <div className="min-h-screen flex flex-col relative selection:bg-emerald-500/20">
 
-      {/* Header Status Bar */}
-      <header className='fixed top-0 left-0 right-0 z-40 bg-[#050505] border-b border-[#00ff9d]/30 backdrop-blur-sm'>
-        <div className='flex items-center justify-between px-6 py-3 text-xs'>
-          <div className='flex items-center gap-4'>
-            <div className='flex items-center gap-2'>
-              <div className='w-2 h-2 bg-[#00ff9d] rounded-full animate-pulse' />
-              <span className='text-[#00ff9d]'>SYSTEM: ONLINE</span>
+      {/* Navigation: Minimal & Functional */}
+      <nav className="border-b border-zinc-800 bg-zinc-950/80 backdrop-blur-md sticky top-0 z-50">
+        <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
+          <div className="flex items-center gap-2 font-semibold tracking-tight">
+            <div className="w-5 h-5 bg-emerald-500 rounded-sm flex items-center justify-center">
+              <span className="text-black font-bold text-xs">O</span>
             </div>
-            <span className='text-zinc-500'>|</span>
-            <span className='text-zinc-400 uppercase'>OkAI Mission Control</span>
+            <span>OkAI Protocol</span>
           </div>
-          <div className='flex items-center gap-4'>
-            <div className='flex items-center gap-2'>
-              <Terminal className='w-4 h-4 text-[#00ff9d]' />
-              <span className='text-zinc-400'>OKAI_PROTOCOL_V2.0</span>
+          <div className="flex items-center gap-6 text-sm text-zinc-400">
+            <span className="hover:text-white cursor-pointer transition-colors">Simulations</span>
+            <span className="hover:text-white cursor-pointer transition-colors">Enterprise</span>
+            <button
+              onClick={handleLogin}
+              className="text-white hover:text-emerald-400 transition-colors font-medium"
+            >
+              Sign In
+            </button>
+          </div>
+        </div>
+      </nav>
+
+      <main className="flex-1 w-full max-w-6xl mx-auto px-6 py-12 lg:py-20 grid lg:grid-cols-2 gap-16 items-start">
+
+        {/* Left Column: The Value Prop */}
+        <div className="space-y-10">
+          <div className="space-y-6">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-900 border border-zinc-800 text-xs text-zinc-400">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              </span>
+              <span>Live Simulation Active</span>
+            </div>
+
+            <h1 className="text-5xl sm:text-6xl font-bold tracking-tight text-white leading-[1.1]">
+              Don't Interview. <br />
+              <span className="text-zinc-500">Just Simulate.</span>
+            </h1>
+
+            <p className="text-lg text-zinc-400 leading-relaxed max-w-md">
+              The modern hiring standard. Prove your engineering velocity by solving real-world production incidents, not abstract algorithms.
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-4 pt-2">
+              <button
+                onClick={handleLogin}
+                className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white text-black rounded-lg font-semibold hover:bg-zinc-200 transition-all active:scale-95"
+              >
+                Start Simulation
+                <ArrowRight size={16} />
+              </button>
+              <div className="flex items-center gap-4 px-4 text-sm text-zinc-500">
+                <div className="flex -space-x-2">
+                  {[...Array(4)].map((_, i) => (
+                    <div key={i} className="w-8 h-8 rounded-full border-2 border-zinc-950 bg-zinc-800" />
+                  ))}
+                </div>
+                <span>200+ Engineers racing</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Trust Signals / Features */}
+          <div className="grid grid-cols-2 gap-6 pt-8 border-t border-zinc-900">
+            <div className="space-y-2">
+              <Activity className="text-zinc-500" size={20} />
+              <h3 className="font-medium text-white">Real Latency</h3>
+              <p className="text-sm text-zinc-500">Simulations mimic prod: flaky APIs, rate limits, and bad docs.</p>
+            </div>
+            <div className="space-y-2">
+              <ShieldCheck className="text-zinc-500" size={20} />
+              <h3 className="font-medium text-white">Verified Skill</h3>
+              <p className="text-sm text-zinc-500">Your code is analyzed for performance, not just correctness.</p>
             </div>
           </div>
         </div>
-      </header>
 
-      {/* Main Content Grid */}
-      <main className='pt-16 min-h-screen'>
-        <div className='w-full max-w-7xl mx-auto p-6'>
-          <div className='grid grid-cols-1 lg:grid-cols-2 gap-8 h-full'>
-
-            {/* Left Column: Mission Briefing */}
-            <div className='space-y-8'>
-              {/* Mission Title */}
-              <div className='text-center lg:text-left mb-8'>
-                <h1 className='text-6xl font-black tracking-tighter mb-3 text-white'>
-                  PROJECT <span className='text-[#00ff9d]'>CHAOS</span>
-                  <span className='text-red-500'>_API</span>
-                </h1>
-                <p className='text-xl text-zinc-400 font-mono leading-relaxed'>
-                  TARGET: Unstable simulation server <br />
-                  OBJECTIVE: Extract 50 user records from chaotic endpoints
-                </p>
-              </div>
-
-              {/* Mission Parameters */}
-              <div className=' bg-zinc-900/50 border border-zinc-800 rounded-lg p-6 backdrop-blur-sm'>
-                <div className='flex items-center gap-3 mb-4'>
-                  <Terminal className='w-5 h-5 text-[#00ff9d]' />
-                  <h3 className='text-lg font-bold text-white uppercase tracking-wider'>MISSION PARAMETERS</h3>
+        {/* Right Column: The "Active Task" Card */}
+        <div className="space-y-6">
+          <div className="glass-card rounded-xl p-1 overflow-hidden shadow-2xl shadow-black/50">
+            {/* Window Header */}
+            <div className="bg-zinc-900/80 border-b border-zinc-800 p-4 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="p-1.5 bg-emerald-500/10 rounded text-emerald-500">
+                  <Terminal size={16} />
                 </div>
-                <div className='space-y-3 text-zinc-300 font-mono text-sm'>
-                  <div className='flex items-start gap-2'>
-                    <span className='text-red-400 mt-0.5'>⟩</span>
-                    <span>API fails 50% of requests with 500 errors</span>
-                  </div>
-                  <div className='flex items-start gap-2'>
-                    <span className='text-red-400 mt-0.5'>⟩</span>
-                    <span>Success responses may contain hidden error flags</span>
-                  </div>
-                  <div className='flex items-start gap-2'>
-                    <span className='text-[#00ff9d] mt-0.5'>⟩</span>
-                    <span>Pagination required: 10 pages × 5 users each</span>
-                  </div>
-                  <div className='flex items-start gap-2'>
-                    <span className='text-[#00ff9d] mt-0.5'>⟩</span>
-                    <span>30-second execution window</span>
-                  </div>
+                <div>
+                  <h3 className="text-sm font-semibold text-white">Chaos_API Integration</h3>
+                  <div className="text-xs text-zinc-500">Difficulty: Hard • Time: 30m</div>
+                </div>
+              </div>
+              <div className="text-xs font-mono text-zinc-500 bg-zinc-900 px-2 py-1 rounded">ID: SIM-01</div>
+            </div>
+
+            {/* Content */}
+            <div className="p-6 bg-zinc-950 space-y-6">
+              <div className="space-y-4">
+                <div className="flex items-start gap-3 text-sm text-zinc-300">
+                  <div className="min-w-[4px] h-4 mt-1 rounded-full bg-zinc-700" />
+                  <p>
+                    <span className="text-zinc-500 uppercase text-xs font-bold tracking-wider block mb-1">Scenario</span>
+                    Our legacy API provider is unstable. It returns 500 errors and silent failures.
+                  </p>
+                </div>
+                <div className="flex items-start gap-3 text-sm text-zinc-300">
+                  <div className="min-w-[4px] h-4 mt-1 rounded-full bg-emerald-500" />
+                  <p>
+                    <span className="text-zinc-500 uppercase text-xs font-bold tracking-wider block mb-1">Objective</span>
+                    Write a resilient ingestion script that handles retries and captures 100% of the data without crashing.
+                  </p>
                 </div>
               </div>
 
-              {/* Action Commands */}
-              <div className='bg-zinc-900/50 border border-zinc-800 rounded-lg p-6 backdrop-blur-sm'>
-                <div className='flex items-center gap-3 mb-4'>
-                  <Github className='w-5 h-5 text-zinc-400' />
-                  <h3 className='text-lg font-bold text-white uppercase tracking-wider'>INITIALIZE SIMULATION</h3>
+              {/* Code Snippet */}
+              <div className="bg-black/50 rounded-lg p-4 font-mono text-xs text-zinc-400 border border-zinc-900">
+                <div className="flex justify-between select-none mb-2 opacity-50">
+                  <span>terminal</span>
+                  <span>bash</span>
                 </div>
-
-                {/* Terminal Window */}
-                <div className='bg-black border border-zinc-700 rounded p-4 font-mono text-sm'>
-                  <div className='text-green-400 mb-2'>$ git clone https://github.com/Maapel/okai-simulation-01.git</div>
-                  <div className='text-green-400 mb-2'>$ cd okai-simulation-01</div>
-                  <div className='text-green-400 mb-2'>$ npm install</div>
-                  <div className='text-green-400 mb-2'>$ npm start</div>
-                  <div className='text-zinc-500 mt-3'>// Your code here: implement resilient API fetching</div>
+                <div className="space-y-1">
+                  <p><span className="text-emerald-500">➜</span> git clone https://github.com/Maapel/okai-simulation-01.git</p>
+                  <p><span className="text-emerald-500">➜</span> cd okai-simulation-01</p>
+                  <p><span className="text-emerald-500">➜</span> npm install</p>
+                  <p><span className="text-emerald-500">➜</span> npm start <span className="animate-pulse">_</span></p>
                 </div>
               </div>
 
-              {/* Launch Button */}
               <button
                 onClick={handleLogin}
-                className='w-full bg-[#00ff9d] hover:bg-[#00ff9d]/80 text-black font-black py-6 text-xl uppercase tracking-widest rounded-lg transition-all duration-300 shadow-lg shadow-[#00ff9d]/25 hover:shadow-[#00ff9d]/40 font-mono border-2 border-[#00ff9d]'
+                className="w-full py-3 bg-zinc-100 hover:bg-white text-black font-medium rounded text-sm transition-colors"
               >
-                [ START SIMULATION ]
+                Accept Challenge
               </button>
             </div>
+          </div>
 
-            {/* Right Column: Live Feed */}
-            <div className='space-y-8'>
-              <div className='text-center lg:text-left mb-8'>
-                <div className='flex items-center gap-3 mb-3'>
-                  <BarChart3 className='w-8 h-8 text-[#00ff9d]' />
-                  <h2 className='text-3xl font-black tracking-tighter text-white'>LIVE MISSION LOG</h2>
-                </div>
-                <p className='text-zinc-400 font-mono text-sm'>
-                  Real-time monitoring of active simulations
-                  <br />
-                  <span className='text-[#00ff9d]'>REFRESH: {'<'}100ms</span>
-                </p>
-              </div>
-
-              <Leaderboard />
+          {/* Live Activity Feed */}
+          <div className="glass-card rounded-xl p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-sm font-semibold text-white flex items-center gap-2">
+                <Users size={16} className="text-zinc-500" />
+                Live Leaderboard
+              </h3>
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+              </span>
             </div>
+
+            {/* Embedding the Leaderboard Logic Here (Simplified for clean look) */}
+            <Leaderboard />
           </div>
         </div>
       </main>
-
-      {/* Footer */}
-      <footer className='fixed bottom-0 left-0 right-0 bg-[#050505] border-t border-zinc-800/50 backdrop-blur-sm'>
-        <div className='px-6 py-3'>
-          <a
-            href="mailto:contact@ok-ai.dev?subject=OkAI Simulation Request"
-            className='text-zinc-500 hover:text-[#00ff9d] transition-colors text-sm font-mono underline'
-          >
-            CTOs: Submit a Simulation Request →
-          </a>
-        </div>
-      </footer>
     </div>
   );
 }
