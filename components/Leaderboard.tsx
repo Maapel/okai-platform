@@ -2,7 +2,7 @@
 import { createClient } from '@/utils/supabase/client';
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Zap } from 'lucide-react';
+import { Zap, Trophy, Clock, Target } from 'lucide-react';
 
 export default function Leaderboard() {
   const [scores, setScores] = useState<any[]>([]);
@@ -47,43 +47,55 @@ export default function Leaderboard() {
   };
 
   return (
-    <div className="border border-zinc-800 bg-[#0c0c0e] rounded-lg overflow-hidden">
-      <div className="grid grid-cols-12 gap-4 px-6 py-3 border-b border-zinc-800 bg-zinc-900/30 text-[10px] font-bold text-zinc-500 uppercase tracking-wider">
-        <div className="col-span-1">Rank</div>
-        <div className="col-span-5">Engineer</div>
-        <div className="col-span-3 text-right">Time</div>
-        <div className="col-span-3 text-right text-emerald-500">VR</div>
+    <div className="glass-card rounded-xl overflow-hidden">
+      <div className="px-6 py-4 border-b border-white/5 flex justify-between items-center bg-white/5">
+        <div className="flex items-center gap-2">
+          <Trophy size={16} className="text-emerald-400" />
+          <h3 className="text-sm font-bold text-white tracking-wide">Global Leaderboard</h3>
+        </div>
+        <div className="flex items-center gap-2 text-[10px] text-zinc-400 font-mono uppercase tracking-wider">
+          <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.6)]" />
+          Live Updates
+        </div>
       </div>
 
-      <div className="divide-y divide-zinc-800/50">
+      <div className="grid grid-cols-12 gap-4 px-6 py-3 border-b border-white/5 bg-black/20 text-[10px] font-bold text-zinc-500 uppercase tracking-wider">
+        <div className="col-span-1">#</div>
+        <div className="col-span-5">Engineer</div>
+        <div className="col-span-3 text-right flex items-center justify-end gap-1"><Clock size={10} /> Time</div>
+        <div className="col-span-3 text-right text-emerald-500 flex items-center justify-end gap-1"><Zap size={10} /> VR</div>
+      </div>
+
+      <div className="divide-y divide-white/5">
         <AnimatePresence>
           {scores.map((score, index) => {
-             const vr = calculateVR(score.tests_passed, score.total_tests, score.completion_time_seconds || 1200);
+            const vr = calculateVR(score.tests_passed, score.total_tests, score.completion_time_seconds || 1200);
 
-             return (
+            return (
               <motion.div
                 key={score.id}
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
-                className="grid grid-cols-12 gap-4 px-6 py-3 items-center text-sm hover:bg-zinc-800/20 transition-colors"
+                className="grid grid-cols-12 gap-4 px-6 py-4 items-center text-sm hover:bg-white/5 transition-colors group"
               >
-                <div className="col-span-1 font-mono text-zinc-600">#{index + 1}</div>
-
-                <div className="col-span-5 flex items-center gap-3">
-                  <div className="w-6 h-6 rounded-full bg-zinc-800 flex items-center justify-center text-[10px] text-zinc-400 font-medium">
-                    {score.github_handle?.[0]?.toUpperCase()}
-                  </div>
-                  <span className="font-medium text-zinc-300">{score.github_handle}</span>
+                <div className="col-span-1 font-mono text-zinc-600 group-hover:text-white transition-colors">
+                  {index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `#${index + 1}`}
                 </div>
 
-                <div className="col-span-3 text-right font-mono text-zinc-500 text-xs">
+                <div className="col-span-5 flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center text-xs text-zinc-400 font-bold border border-zinc-700 group-hover:border-zinc-500 transition-colors">
+                    {score.github_handle?.[0]?.toUpperCase()}
+                  </div>
+                  <span className="font-medium text-zinc-300 group-hover:text-white transition-colors">{score.github_handle}</span>
+                </div>
+
+                <div className="col-span-3 text-right font-mono text-zinc-500 text-xs group-hover:text-zinc-300 transition-colors">
                   {formatTime(score.completion_time_seconds)}
                 </div>
 
                 <div className="col-span-3 text-right">
-                  <div className="inline-flex items-center gap-1.5">
-                    <Zap size={12} className="text-emerald-500 fill-emerald-500/20" />
-                    <span className="font-bold text-white font-mono">{vr}</span>
+                  <div className="inline-flex items-center gap-1.5 px-2 py-1 rounded bg-emerald-500/10 border border-emerald-500/20 group-hover:bg-emerald-500/20 transition-colors">
+                    <span className="font-bold text-emerald-400 font-mono">{vr}</span>
                   </div>
                 </div>
               </motion.div>
@@ -92,8 +104,8 @@ export default function Leaderboard() {
         </AnimatePresence>
 
         {scores.length === 0 && (
-          <div className="px-6 py-8 text-center text-xs text-zinc-500">
-            <div className="mb-2">No recent calibrations...</div>
+          <div className="px-6 py-12 text-center text-xs text-zinc-500">
+            <div className="mb-2 text-zinc-400 font-medium">No recent calibrations...</div>
             <div className="text-zinc-600">Be the first to earn a Velocity Rating!</div>
           </div>
         )}
