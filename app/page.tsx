@@ -6,6 +6,9 @@ import ChallengeCard from '@/components/ChallengeCard';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 
+import HowItWorks from '@/components/HowItWorks';
+import Footer from '@/components/Footer';
+
 export default function Home() {
   const supabase = createClient();
   const [status, setStatus] = useState<'idle' | 'starting' | 'active'>('idle');
@@ -59,10 +62,10 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen text-zinc-300 font-sans selection:bg-emerald-500/30 overflow-x-hidden">
+    <div className="min-h-screen text-zinc-300 font-sans selection:bg-emerald-500/30 overflow-x-hidden flex flex-col">
       <Navbar />
 
-      <main className="flex-1 w-full max-w-7xl mx-auto px-6 py-32">
+      <main className="flex-1 w-full max-w-7xl mx-auto px-6 pt-32 pb-16">
         {/* HERO: Grounded & Direct */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -82,11 +85,14 @@ export default function Home() {
           </p>
         </motion.div>
 
-        <div className="grid lg:grid-cols-12 gap-12" id="challenges">
+        <HowItWorks />
+
+        <div className="grid lg:grid-cols-12 gap-12 mt-24" id="challenges">
           {/* LEFT: Challenge Card */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
             className="lg:col-span-8 space-y-6"
           >
@@ -102,7 +108,8 @@ export default function Home() {
           {/* RIGHT: Leaderboard */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
             className="lg:col-span-4 space-y-8"
           >
@@ -110,6 +117,8 @@ export default function Home() {
           </motion.div>
         </div>
       </main>
+
+      <Footer />
     </div>
   );
 }
