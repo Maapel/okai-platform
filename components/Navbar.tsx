@@ -39,6 +39,9 @@ export default function Navbar() {
           <a href="#challenges" className="text-zinc-400 hover:text-white transition-colors hidden sm:block">
             Challenges
           </a>
+          <a href="/hire" className="text-zinc-400 hover:text-white transition-colors hidden sm:block">
+            For Startups
+          </a>
 
           {user ? (
             <div className="flex items-center gap-4">
