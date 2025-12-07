@@ -29,14 +29,11 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="border-b border-zinc-800 bg-zinc-950/80 backdrop-blur-md sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-6 h-14 flex items-center justify-between">
-
-        {/* BRANDING: Clean and Simple */}
-        <div className="flex items-center gap-2 font-semibold tracking-tight cursor-pointer">
-          <Image src="/okai_logo.svg" alt="OkAI" width={24} height={24} />
-          <span className="text-white">OkAI</span>
-        </div>
+    <nav className="fixed top-0 w-full z-50 border-b border-white/5 bg-[#09090b]/80 backdrop-blur-xl h-16 flex items-center justify-between px-6">
+      <div className="flex items-center gap-4 font-semibold tracking-tight cursor-pointer">
+        <Image src="/okai_logo.svg" alt="OkAI Logo" width={40} height={40} className="rounded-md" />
+        <span className="text-white text-lg">OkAI</span>
+      </div>
 
         <div className="flex items-center gap-6 text-sm font-medium">
           <a href="#challenges" className="text-zinc-400 hover:text-white transition-colors hidden sm:block">
@@ -68,7 +65,6 @@ export default function Navbar() {
             </button>
           )}
         </div>
-      </div>
     </nav>
   );
 }
