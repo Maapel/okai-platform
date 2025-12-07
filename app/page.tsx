@@ -2,12 +2,15 @@
 import { createClient } from '@/utils/supabase/client';
 import Leaderboard from '@/components/Leaderboard';
 import Navbar from '@/components/Navbar';
-import { Terminal, Code2, GitFork, Trophy, Clock, Copy, Check, ArrowRight } from 'lucide-react';
-import { useState } from 'react';
+import { Terminal, Code2, GitFork, Trophy, Clock, Copy, Check, ArrowRight, Play } from 'lucide-react';
+import { useState, useEffect } from 'react';
 
 export default function Home() {
   const supabase = createClient();
   const [copied, setCopied] = useState(false);
+  const [challengeStarted, setChallengeStarted] = useState(false);
+  const [startTime, setStartTime] = useState<Date | null>(null);
+  const [elapsedTime, setElapsedTime] = useState(0);
 
   const handleLogin = async () => {
     await supabase.auth.signInWithOAuth({
@@ -16,10 +19,46 @@ export default function Home() {
     });
   };
 
+  const startChallenge = async () => {
+    try {
+      const response = await fetch('/api/challenge/start', {
+        method: 'POST',
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setStartTime(new Date(data.startTime));
+        setChallengeStarted(true);
+      }
+    } catch (error) {
+      console.error('Failed to start challenge:', error);
+    }
+  };
+
   const copyCommand = () => {
-    navigator.clipboard.writeText("git clone https://github.com/Maapel/okai-challenge-01.git");
+    navigator.clipboard.writeText("git clone https://github.com/Maapel/okai-challenge-01.git && cd okai-challenge-01 && npm install");
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  // Timer effect
+  useEffect(() => {
+    if (startTime && challengeStarted) {
+      const timer = setInterval(() => {
+        const now = new Date();
+        const diff = Math.floor((now.getTime() - startTime.getTime()) / 1000);
+        setElapsedTime(diff);
+      }, 1000);
+
+      return () => clearInterval(timer);
+    }
+  }, [startTime, challengeStarted]);
+
+  // Format time display
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
   return (
@@ -82,6 +121,11 @@ export default function Home() {
                   </div>
                   <div className="text-right">
                     <span className="text-xs font-mono text-zinc-600 block mb-1">ID: CHAOS-01</span>
+                    {challengeStarted && (
+                      <div className="text-emerald-400 font-mono font-bold">
+                        {formatTime(elapsedTime)}
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -92,27 +136,38 @@ export default function Home() {
                   and ensure 100% data integrity.
                 </p>
 
-                {/* The "Clone Bar" - Pure Utility */}
-                <div className="flex flex-col sm:flex-row gap-3 items-stretch">
-                  <div
-                    onClick={copyCommand}
-                    className="flex-1 bg-black rounded-lg border border-zinc-900 flex items-center px-4 py-3 cursor-pointer hover:border-emerald-500/30 transition-colors group/cmd"
-                  >
-                    <span className="text-emerald-500 mr-3">$</span>
-                    <code className="flex-1 font-mono text-xs text-zinc-300 truncate">
-                      git clone https://github.com/Maapel/okai-challenge-01.git
-                    </code>
-                    <div className="ml-3 text-zinc-600 group-hover/cmd:text-white transition-colors">
-                      {copied ? <Check size={14} /> : <Copy size={14} />}
-                    </div>
-                  </div>
+                {!challengeStarted ? (
+                  /* Start Timer Button */
                   <button
-                    onClick={handleLogin}
-                    className="px-6 bg-zinc-100 hover:bg-white text-black font-medium rounded-lg text-sm transition-colors whitespace-nowrap"
+                    onClick={startChallenge}
+                    className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-4 rounded-lg transition-colors flex items-center justify-center gap-2"
                   >
-                    Submit Solution
+                    <Play size={18} />
+                    Start Challenge (45m limit)
                   </button>
-                </div>
+                ) : (
+                  /* Clone Bar - Revealed after start */
+                  <div className="flex flex-col sm:flex-row gap-3 items-stretch">
+                    <div
+                      onClick={copyCommand}
+                      className="flex-1 bg-black rounded-lg border border-zinc-900 flex items-center px-4 py-3 cursor-pointer hover:border-emerald-500/30 transition-colors group/cmd"
+                    >
+                      <span className="text-emerald-500 mr-3">$</span>
+                      <code className="flex-1 font-mono text-xs text-zinc-300 truncate">
+                        git clone https://github.com/Maapel/okai-challenge-01.git && npm install
+                      </code>
+                      <div className="ml-3 text-zinc-600 group-hover/cmd:text-white transition-colors">
+                        {copied ? <Check size={14} /> : <Copy size={14} />}
+                      </div>
+                    </div>
+                    <button
+                      onClick={handleLogin}
+                      className="px-6 bg-zinc-100 hover:bg-white text-black font-medium rounded-lg text-sm transition-colors whitespace-nowrap"
+                    >
+                      Submit Solution
+                    </button>
+                  </div>
+                )}
               </div>
 
               <div className="bg-zinc-900/30 px-6 py-3 border-t border-zinc-800/50 flex gap-6 text-xs text-zinc-500 font-medium">

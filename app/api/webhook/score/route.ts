@@ -14,17 +14,58 @@ export async function POST(request: Request) {
 
     console.log(`📝 Score received for ${github_handle}: ${tests_passed}/${total_tests}`);
 
-    const { error } = await supabase.from('submissions').insert({
-      github_handle,
-      repo_url,
-      tests_passed,
-      total_tests,
+    // Find the pending attempt for this user
+    const { data: pendingAttempt, error: findError } = await supabase
+      .from('submissions')
+      .select('*')
+      .eq('github_handle', github_handle)
+      .eq('status', 'pending')
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (findError) {
+      console.error('Error finding pending attempt:', findError);
+      return NextResponse.json({ error: 'Failed to find attempt' }, { status: 500 });
+    }
+
+    if (!pendingAttempt) {
+      console.log(`No pending attempt found for ${github_handle}`);
+      return NextResponse.json({ error: 'No active challenge found for this user' }, { status: 404 });
+    }
+
+    // Calculate completion time
+    const startedAt = new Date(pendingAttempt.started_at);
+    const completedAt = new Date();
+    const completionTimeSeconds = Math.floor((completedAt.getTime() - startedAt.getTime()) / 1000);
+
+    console.log(`⏰ Completion time for ${github_handle}: ${completionTimeSeconds}s`);
+
+    // Update the existing pending submission with results
+    const { error: updateError } = await supabase
+      .from('submissions')
+      .update({
+        repo_url,
+        tests_passed,
+        total_tests,
+        completion_time_seconds: completionTimeSeconds,
+        status: 'completed',
+        created_at: completedAt.toISOString() // Override with actual completion time
+      })
+      .eq('id', pendingAttempt.id);
+
+    if (updateError) {
+      console.error('Error updating submission:', updateError);
+      throw updateError;
+    }
+
+    return NextResponse.json({
+      status: 'scouted',
+      completionTime: completionTimeSeconds,
+      vr: Math.floor((tests_passed / total_tests) * 1000 + (500 - (completionTimeSeconds / 10)))
     });
-
-    if (error) throw error;
-
-    return NextResponse.json({ status: 'scouted' });
   } catch (error) {
+    console.error('Webhook error:', error);
     return NextResponse.json({ error: 'Failed to record score' }, { status: 500 });
   }
 }
