@@ -36,9 +36,9 @@ export default function Navbar() {
       </div>
 
       <div className="flex items-center gap-6 text-sm font-medium">
-        <a href="#simulations" className="text-zinc-400 hover:text-white transition-colors hidden sm:block">
-          Simulations
-        </a>
+          <a href="#challenges" className="text-zinc-400 hover:text-white transition-colors hidden sm:block">
+            Challenges
+          </a>
         <a href="/hire" className="text-zinc-400 hover:text-white transition-colors hidden sm:block">
           For Startups
         </a>

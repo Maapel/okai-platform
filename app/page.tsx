@@ -2,7 +2,7 @@
 import { createClient } from '@/utils/supabase/client';
 import Leaderboard from '@/components/Leaderboard';
 import Navbar from '@/components/Navbar';
-import { Terminal, ArrowRight, Activity, ShieldCheck, Cpu, Lock, Copy, Check } from 'lucide-react';
+import { Terminal, ArrowRight, Code2, GitFork, Trophy, Clock, Copy, Check } from 'lucide-react';
 import { useState } from 'react';
 
 export default function Home() {
@@ -17,7 +17,7 @@ export default function Home() {
   };
 
   const copyCommand = () => {
-    navigator.clipboard.writeText("git clone https://github.com/Maapel/okai-simulation-01.git");
+    navigator.clipboard.writeText("git clone https://github.com/Maapel/okai-challenge-01.git");
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -27,134 +27,132 @@ export default function Home() {
 
       <Navbar />
 
-      <main className="pt-32 pb-20 px-6 max-w-7xl mx-auto">
-        <div className="grid lg:grid-cols-12 gap-16">
+      <main className="flex-1 w-full max-w-7xl mx-auto px-6 py-20">
 
-          {/* Left Column: The "Hook" (60% width) */}
-          <div className="lg:col-span-7 flex flex-col justify-center space-y-10">
+        {/* HERO: Direct and Clear */}
+        <div className="max-w-3xl mb-24">
+          <h1 className="text-5xl sm:text-6xl font-bold text-white tracking-tight mb-6">
+            Real-world engineering challenges.
+          </h1>
+          <p className="text-xl text-zinc-400 leading-relaxed mb-8">
+            OkAI is a platform for practicing production-grade development.
+            Clone repositories, fix broken systems, and verify your skills with automated test suites.
+          </p>
+          <div className="flex gap-4">
+            <button
+              onClick={handleLogin}
+              className="h-12 px-6 bg-white text-black font-semibold rounded-lg hover:bg-zinc-200 transition-all"
+            >
+              Get Started
+            </button>
+            <a href="#challenges" className="h-12 px-6 flex items-center justify-center border border-zinc-800 text-zinc-300 font-medium rounded-lg hover:bg-zinc-900 transition-all">
+              View Challenges
+            </a>
+          </div>
+        </div>
 
-            {/* The "Live" Badge */}
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-emerald-500/20 bg-emerald-500/10 text-emerald-400 text-xs font-mono w-fit">
-              <Activity size={12} />
-              <span>SIMULATION #001: LIVE NOW</span>
-            </div>
+        <div className="grid lg:grid-cols-12 gap-12" id="challenges">
 
-            <div className="space-y-6">
-              <h1 className="text-6xl md:text-7xl font-bold text-white tracking-tighter leading-[0.9]">
-                Don't Interview.<br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-emerald-700">
-                  Just Ship.
-                </span>
-              </h1>
-              <p className="text-xl text-zinc-400 max-w-lg leading-relaxed">
-                The first engineering league where your code is your resume. Solve production disasters, not algorithm puzzles.
-              </p>
-            </div>
+          {/* LEFT COLUMN: The Challenge List */}
+          <div className="lg:col-span-8 space-y-8">
+            <h2 className="text-xl font-semibold text-white flex items-center gap-2">
+              <Code2 size={20} className="text-emerald-500" />
+              Active Challenges
+            </h2>
 
-            <div className="flex flex-col sm:flex-row gap-4">
-              <button
-                onClick={handleLogin}
-                className="h-14 px-8 bg-white text-black font-bold rounded-lg hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-3"
-              >
-                <Terminal size={18} />
-                Start Simulation
-              </button>
-              <div className="h-14 px-6 rounded-lg border border-white/10 flex items-center justify-center gap-3 text-sm text-zinc-400">
-                <div className="flex -space-x-3">
-                  {[1,2,3].map((i) => (
-                    <div key={i} className="w-8 h-8 rounded-full bg-zinc-800 border-2 border-[#09090b]" />
-                  ))}
+            {/* Challenge Card 01 */}
+            <div className="bg-[#121214] border border-zinc-800 rounded-xl overflow-hidden hover:border-zinc-700 transition-colors">
+              <div className="p-6 md:p-8">
+                <div className="flex justify-between items-start mb-4">
+                  <div className="space-y-1">
+                    <h3 className="text-lg font-bold text-white">API Rate Limiter & Resilience</h3>
+                    <div className="flex items-center gap-3 text-xs text-zinc-500 font-medium">
+                      <span className="text-emerald-400">Node.js</span>
+                      <span>•</span>
+                      <span>Backend</span>
+                      <span>•</span>
+                      <span>Hard</span>
+                    </div>
+                  </div>
+                  <div className="flex flex-col items-end gap-1">
+                    <span className="text-xs font-mono text-zinc-500">ID: CHAOS-01</span>
+                  </div>
                 </div>
-                <span>128 Engineers Online</span>
+
+                <p className="text-sm text-zinc-400 leading-relaxed mb-6">
+                  A legacy API client is crashing under load. It fails to handle 429 errors and "Silent Failure" 200 OK responses. Your task is to refactor the ingestion script to implement exponential backoff and 100% data reliability.
+                </p>
+
+                {/* Quick Start Bar */}
+                <div className="flex flex-col md:flex-row gap-4 items-start md:items-center bg-black/40 rounded-lg p-3 border border-zinc-900">
+                  <div className="flex-1 font-mono text-xs text-zinc-400 truncate w-full">
+                    <span className="text-zinc-600 select-none mr-2">$</span>
+                    git clone https://github.com/Maapel/okai-challenge-01.git
+                  </div>
+                  <button
+                    onClick={copyCommand}
+                    className="shrink-0 flex items-center gap-2 text-xs font-medium text-emerald-500 hover:text-emerald-400"
+                  >
+                    {copied ? <Check size={14} /> : <Copy size={14} />}
+                    {copied ? "Copied" : "Copy Clone Command"}
+                  </button>
+                </div>
+              </div>
+
+              <div className="bg-zinc-900/50 px-6 md:px-8 py-3 border-t border-zinc-800 flex justify-between items-center text-xs text-zinc-500">
+                <div className="flex items-center gap-4">
+                  <span className="flex items-center gap-1.5"><Clock size={14} /> ~45 mins</span>
+                  <span className="flex items-center gap-1.5"><GitFork size={14} /> 128 forks</span>
+                </div>
+                <button onClick={handleLogin} className="text-white hover:underline">
+                  View Details {'>'}
+                </button>
               </div>
             </div>
 
-            {/* The "Proof" Section */}
-            <div className="pt-12 border-t border-white/5 grid grid-cols-2 gap-8">
-              <div>
-                <h3 className="text-white font-semibold mb-1 flex items-center gap-2">
-                  <Cpu size={16} className="text-emerald-500"/>
-                  Real Environments
-                </h3>
-                <p className="text-sm text-zinc-500">
-                  No sandboxes. You get a real repo, real APIs, and real broken code.
-                </p>
+            {/* Placeholder for Challenge 02 (To show it's a list) */}
+            <div className="bg-[#121214] border border-zinc-800/50 rounded-xl p-8 opacity-50 grayscale hover:opacity-75 hover:grayscale-0 transition-all cursor-not-allowed">
+              <div className="flex justify-between items-start mb-2">
+                <h3 className="text-lg font-bold text-white">Next.js Server Actions Mutation</h3>
+                <span className="text-xs border border-zinc-700 px-2 py-1 rounded text-zinc-500">Coming Soon</span>
               </div>
-              <div>
-                <h3 className="text-white font-semibold mb-1 flex items-center gap-2">
-                  <Lock size={16} className="text-emerald-500"/>
-                  Bounties Unlocked
-                </h3>
-                <p className="text-sm text-zinc-500">
-                  Top 5% performers get direct intros to YC Founders.
-                </p>
-              </div>
+              <p className="text-sm text-zinc-500">
+                Fix a race condition in a high-traffic voting component using Optimistic UI and Supabase Realtime.
+              </p>
             </div>
           </div>
 
-          {/* Right Column: The "Console" (40% width) */}
-          <div className="lg:col-span-5 space-y-6">
+          {/* RIGHT COLUMN: Sidebar Stats */}
+          <div className="lg:col-span-4 space-y-8">
 
-            {/* The Active Mission Card */}
-            <div className="bg-zinc-900/50 border border-white/10 rounded-xl overflow-hidden backdrop-blur-md">
-              <div className="bg-white/5 px-4 py-3 border-b border-white/5 flex justify-between items-center">
-                <span className="text-xs font-mono text-zinc-400">MISSION_BRIEF.md</span>
-                <div className="flex gap-1.5">
-                  <div className="w-2.5 h-2.5 rounded-full bg-red-500/20 border border-red-500/50" />
-                  <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/20 border border-yellow-500/50" />
-                  <div className="w-2.5 h-2.5 rounded-full bg-emerald-500/20 border border-emerald-500/50" />
-                </div>
+            {/* Leaderboard Widget */}
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-sm font-semibold text-white flex items-center gap-2">
+                  <Trophy size={16} className="text-emerald-500" />
+                  Recent Completions
+                </h2>
               </div>
-              <div className="p-6 space-y-4 font-mono text-sm">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h3 className="text-white font-bold text-lg">Chaos API Integration</h3>
-                    <p className="text-emerald-500 text-xs mt-1">DIFFICULTY: HARD</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-zinc-500 text-xs">REWARD</p>
-                    <p className="text-white font-bold">2500 XP</p>
-                  </div>
-                </div>
-
-                <div className="space-y-2 text-zinc-400 text-xs">
-                  <p className="flex gap-2">
-                    <span className="text-emerald-500">➜</span>
-                    <span>Handle 429 Rate Limits without crashing</span>
-                  </p>
-                  <p className="flex gap-2">
-                    <span className="text-emerald-500">➜</span>
-                    <span>Parse "Silent Error" 200 OK responses</span>
-                  </p>
-                  <p className="flex gap-2">
-                    <span className="text-emerald-500">➜</span>
-                    <span>Implement exponential backoff</span>
-                  </p>
-                </div>
-
-                <div className="pt-4 border-t border-dashed border-white/10">
-                   <div
-                     onClick={copyCommand}
-                     className="bg-black rounded p-3 text-xs text-zinc-500 font-mono relative group cursor-pointer hover:border-zinc-700 transition-colors"
-                   >
-                     <div className="absolute right-3 top-3 opacity-0 group-hover:opacity-100 transition-opacity">
-                       {copied ? <Check size={14} className="text-emerald-500"/> : <Copy size={14} />}
-                     </div>
-                     <div className="space-y-1">
-                       <p><span className="text-emerald-500">➜</span> git clone https://github.com/Maapel/okai-simulation-01.git</p>
-                       <p><span className="text-emerald-500">➜</span> cd okai-simulation-01</p>
-                       <p><span className="text-emerald-500">➜</span> npm install</p>
-                       <p><span className="text-emerald-500">➜</span> npm start <span className="animate-pulse">_</span></p>
-                     </div>
-                   </div>
-                </div>
-              </div>
+              <Leaderboard />
             </div>
 
-            {/* The Live Leaderboard Widget */}
-            <div className="relative">
-              <div className="absolute inset-0 bg-emerald-500/5 blur-3xl rounded-full pointer-events-none" />
-              <Leaderboard />
+            {/* Info Card */}
+            <div className="bg-zinc-900/30 border border-zinc-800 rounded-xl p-6">
+              <h3 className="text-sm font-bold text-white mb-3">How it works</h3>
+              <ol className="space-y-4 text-sm text-zinc-400">
+                <li className="flex gap-3">
+                  <span className="flex items-center justify-center w-5 h-5 rounded-full bg-zinc-800 text-xs font-medium text-white shrink-0">1</span>
+                  <span>Clone the repository locally. Use your own IDE and tools.</span>
+                </li>
+                <li className="flex gap-3">
+                  <span className="flex items-center justify-center w-5 h-5 rounded-full bg-zinc-800 text-xs font-medium text-white shrink-0">2</span>
+                  <span>Solve the problem constraints listed in the README.</span>
+                </li>
+                <li className="flex gap-3">
+                  <span className="flex items-center justify-center w-5 h-5 rounded-full bg-zinc-800 text-xs font-medium text-white shrink-0">3</span>
+                  <span>Push to main. Our GitHub Action runs the test suite instantly.</span>
+                </li>
+              </ol>
             </div>
 
           </div>
