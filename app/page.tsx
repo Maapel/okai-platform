@@ -1,11 +1,13 @@
 'use client';
 import { createClient } from '@/utils/supabase/client';
 import Leaderboard from '@/components/Leaderboard';
-import { Terminal, Github, ChevronRight, Activity, Cpu, Lock } from 'lucide-react';
-import Link from 'next/link';
+import Navbar from '@/components/Navbar';
+import { Terminal, ArrowRight, Activity, ShieldCheck, Cpu, Lock, Copy, Check } from 'lucide-react';
+import { useState } from 'react';
 
 export default function Home() {
   const supabase = createClient();
+  const [copied, setCopied] = useState(false);
 
   const handleLogin = async () => {
     await supabase.auth.signInWithOAuth({
@@ -14,28 +16,16 @@ export default function Home() {
     });
   };
 
+  const copyCommand = () => {
+    navigator.clipboard.writeText("git clone https://github.com/Maapel/okai-simulation-01.git");
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
   return (
     <div className="min-h-screen bg-[#09090b] text-zinc-300 font-sans selection:bg-emerald-500/30">
 
-      {/* 1. The "Pro" Navbar */}
-      <nav className="fixed top-0 w-full z-50 border-b border-white/5 bg-[#09090b]/80 backdrop-blur-xl h-14 flex items-center justify-between px-6">
-        <div className="flex items-center gap-2 font-bold text-white tracking-tight">
-          <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_8px_#10b981]" />
-          OkAI_PROTOCOL
-        </div>
-        <div className="flex items-center gap-6 text-xs font-medium">
-          <Link href="/hire" className="text-zinc-500 hover:text-white transition-colors">
-            For Startups
-          </Link>
-          <button
-            onClick={handleLogin}
-            className="flex items-center gap-2 text-white hover:text-emerald-400 transition-colors"
-          >
-            <Github size={14} />
-            <span>Connect Identity</span>
-          </button>
-        </div>
-      </nav>
+      <Navbar />
 
       <main className="pt-32 pb-20 px-6 max-w-7xl mx-auto">
         <div className="grid lg:grid-cols-12 gap-16">
@@ -143,9 +133,19 @@ export default function Home() {
                 </div>
 
                 <div className="pt-4 border-t border-dashed border-white/10">
-                   <div className="bg-black rounded p-3 text-xs text-zinc-500 font-mono">
-                      $ git clone https://github.com/Maapel/okai-simulation-01.git <br/>
-                      $ npm test <span className="animate-pulse">_</span>
+                   <div
+                     onClick={copyCommand}
+                     className="bg-black rounded p-3 text-xs text-zinc-500 font-mono relative group cursor-pointer hover:border-zinc-700 transition-colors"
+                   >
+                     <div className="absolute right-3 top-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                       {copied ? <Check size={14} className="text-emerald-500"/> : <Copy size={14} />}
+                     </div>
+                     <div className="space-y-1">
+                       <p><span className="text-emerald-500">➜</span> git clone https://github.com/Maapel/okai-simulation-01.git</p>
+                       <p><span className="text-emerald-500">➜</span> cd okai-simulation-01</p>
+                       <p><span className="text-emerald-500">➜</span> npm install</p>
+                       <p><span className="text-emerald-500">➜</span> npm start <span className="animate-pulse">_</span></p>
+                     </div>
                    </div>
                 </div>
               </div>
