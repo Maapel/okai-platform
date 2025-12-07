@@ -2,63 +2,47 @@
 import { createClient } from '@/utils/supabase/client';
 import Leaderboard from '@/components/Leaderboard';
 import Navbar from '@/components/Navbar';
-import { Terminal, Code2, GitFork, Trophy, Clock, Copy, Check, ArrowRight, Play } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { Code2, GitFork, Trophy, Clock, Copy, Check, ArrowRight, Lock, Loader2, Play } from 'lucide-react';
+import { useState } from 'react';
 
 export default function Home() {
   const supabase = createClient();
+  const [status, setStatus] = useState<'idle' | 'starting' | 'active'>('idle');
+  const [repoUrl, setRepoUrl] = useState('');
   const [copied, setCopied] = useState(false);
-  const [challengeStarted, setChallengeStarted] = useState(false);
-  const [startTime, setStartTime] = useState<Date | null>(null);
-  const [elapsedTime, setElapsedTime] = useState(0);
 
-  const handleLogin = async () => {
-    await supabase.auth.signInWithOAuth({
-      provider: 'github',
-      options: { redirectTo: `${location.origin}/auth/callback` }
-    });
-  };
+  const handleStart = async () => {
+    setStatus('starting');
 
-  const startChallenge = async () => {
-    try {
-      const response = await fetch('/api/challenge/start', {
-        method: 'POST',
+    // 1. Check Auth
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      await supabase.auth.signInWithOAuth({
+        provider: 'github',
+        options: { redirectTo: `${location.origin}/auth/callback` }
       });
+      return;
+    }
 
-      if (response.ok) {
-        const data = await response.json();
-        setStartTime(new Date(data.startTime));
-        setChallengeStarted(true);
+    // 2. Start Timer API
+    try {
+      const res = await fetch('/api/challenge/start', { method: 'POST' });
+      const data = await res.json();
+
+      if (data.repoUrl) {
+        setRepoUrl(data.repoUrl);
+        setStatus('active');
       }
-    } catch (error) {
-      console.error('Failed to start challenge:', error);
+    } catch (e) {
+      console.error("Failed to start challenge", e);
+      setStatus('idle');
     }
   };
 
   const copyCommand = () => {
-    navigator.clipboard.writeText("git clone https://github.com/Maapel/okai-challenge-01.git && cd okai-challenge-01 && npm install");
+    navigator.clipboard.writeText(`git clone ${repoUrl}`);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
-  };
-
-  // Timer effect
-  useEffect(() => {
-    if (startTime && challengeStarted) {
-      const timer = setInterval(() => {
-        const now = new Date();
-        const diff = Math.floor((now.getTime() - startTime.getTime()) / 1000);
-        setElapsedTime(diff);
-      }, 1000);
-
-      return () => clearInterval(timer);
-    }
-  }, [startTime, challengeStarted]);
-
-  // Format time display
-  const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
   return (
@@ -105,75 +89,76 @@ export default function Home() {
             </div>
 
             {/* CARD 1: The Chaos API */}
-            <div className="group bg-[#121214] border border-zinc-800 rounded-xl overflow-hidden hover:border-zinc-700 transition-all">
+            <div className="group bg-[#121214] border border-zinc-800 rounded-xl overflow-hidden hover:border-zinc-700 transition-all relative">
+
+              {/* Card Content */}
               <div className="p-6 md:p-8">
                 <div className="flex justify-between items-start mb-4">
                   <div>
                     <h3 className="text-xl font-bold text-white mb-2 group-hover:text-emerald-400 transition-colors">
                       API Rate Limiter & Resilience
                     </h3>
-                    <div className="flex flex-wrap items-center gap-3 text-xs text-zinc-500 font-medium font-mono">
-                      <span className="text-emerald-400 px-2 py-1 bg-emerald-500/10 rounded">Node.js</span>
-                      <span>Backend</span>
-                      <span>Async/Await</span>
-                      <span>Difficulty: Hard</span>
+                    <div className="flex gap-3 text-xs text-zinc-500 font-mono">
+                      <span className="text-emerald-400">Node.js</span> • <span>Backend</span> • <span>Hard</span>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <span className="text-xs font-mono text-zinc-600 block mb-1">ID: CHAOS-01</span>
-                    {challengeStarted && (
-                      <div className="text-emerald-400 font-mono font-bold">
-                        {formatTime(elapsedTime)}
-                      </div>
-                    )}
-                  </div>
+                  <span className="text-xs font-mono text-zinc-600">ID: CHAOS-01</span>
                 </div>
 
-                <p className="text-sm text-zinc-400 leading-relaxed mb-6 max-w-2xl">
-                  A legacy data ingestion client is crashing under high load. It fails to handle
-                  <code className="mx-1 px-1 bg-black border border-zinc-800 rounded text-zinc-300">429 Too Many Requests</code>
-                  and "Silent Failure" responses. Your task is to refactor the client to implement exponential backoff
-                  and ensure 100% data integrity.
+                <p className="text-sm text-zinc-400 leading-relaxed mb-8 max-w-2xl">
+                  A legacy API client is failing. It returns 429s and silent failures. Refactor it to handle backoff strategies and ensure 100% data integrity.
                 </p>
 
-                {!challengeStarted ? (
-                  /* Start Timer Button */
-                  <button
-                    onClick={startChallenge}
-                    className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-4 rounded-lg transition-colors flex items-center justify-center gap-2"
-                  >
-                    <Play size={18} />
-                    Start Challenge (45m limit)
-                  </button>
-                ) : (
-                  /* Clone Bar - Revealed after start */
-                  <div className="flex flex-col sm:flex-row gap-3 items-stretch">
-                    <div
-                      onClick={copyCommand}
-                      className="flex-1 bg-black rounded-lg border border-zinc-900 flex items-center px-4 py-3 cursor-pointer hover:border-emerald-500/30 transition-colors group/cmd"
-                    >
-                      <span className="text-emerald-500 mr-3">$</span>
-                      <code className="flex-1 font-mono text-xs text-zinc-300 truncate">
-                        git clone https://github.com/Maapel/okai-challenge-01.git && npm install
-                      </code>
-                      <div className="ml-3 text-zinc-600 group-hover/cmd:text-white transition-colors">
-                        {copied ? <Check size={14} /> : <Copy size={14} />}
-                      </div>
+                {/* THE ACTION AREA */}
+                {status === 'active' ? (
+                  <div className="bg-zinc-900/50 rounded-lg border border-zinc-800 p-4 space-y-4 animate-in fade-in slide-in-from-top-2">
+                    <div className="flex items-center justify-between text-xs text-zinc-400">
+                      <span className="text-emerald-500 flex items-center gap-2">
+                        <span className="relative flex h-2 w-2">
+                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                          <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                        </span>
+                        Timer Running...
+                      </span>
+                      <span>Step 1: Fork & Clone</span>
                     </div>
-                    <button
-                      onClick={handleLogin}
-                      className="px-6 bg-zinc-100 hover:bg-white text-black font-medium rounded-lg text-sm transition-colors whitespace-nowrap"
-                    >
-                      Submit Solution
-                    </button>
-                  </div>
-                )}
-              </div>
 
-              <div className="bg-zinc-900/30 px-6 py-3 border-t border-zinc-800/50 flex gap-6 text-xs text-zinc-500 font-medium">
-                <span className="flex items-center gap-2"><Clock size={14} /> ~45 mins</span>
-                <span className="flex items-center gap-2"><GitFork size={14} /> 128 forks</span>
-                <span className="flex items-center gap-2"><Trophy size={14} /> Top Score: 100% (12m)</span>
+                    <div className="flex gap-3">
+                      <div
+                        onClick={copyCommand}
+                        className="flex-1 bg-black border border-zinc-700 rounded flex items-center px-3 py-3 cursor-pointer hover:border-emerald-500/50 transition-colors"
+                      >
+                        <span className="text-emerald-500 mr-3">$</span>
+                        <code className="flex-1 font-mono text-xs text-zinc-300 truncate">
+                          git clone {repoUrl}
+                        </code>
+                        {copied ? <Check size={14} className="text-emerald-500"/> : <Copy size={14} />}
+                      </div>
+                      <a
+                        href={repoUrl}
+                        target="_blank"
+                        className="px-4 bg-white text-black font-bold rounded flex items-center text-xs hover:bg-zinc-200"
+                      >
+                        Open Repo <ArrowRight size={14} className="ml-2"/>
+                      </a>
+                    </div>
+                    <p className="text-[10px] text-zinc-500">
+                      *Important: <strong>Fork</strong> the repository, then push to your fork's main branch to trigger the Judge.
+                    </p>
+                  </div>
+                ) : (
+                  <button
+                    onClick={handleStart}
+                    disabled={status === 'starting'}
+                    className="w-full h-14 bg-white text-black font-bold rounded-lg hover:bg-zinc-200 transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {status === 'starting' ? (
+                      <><Loader2 className="animate-spin" /> Initializing Environment...</>
+                    ) : (
+                      <><Play size={18} fill="currentColor" /> Start Challenge</>
+                    )}
+                  </button>
+                )}
               </div>
             </div>
 
