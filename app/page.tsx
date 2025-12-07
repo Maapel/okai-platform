@@ -121,7 +121,7 @@ export default function Home() {
                 <p className='text-zinc-400 font-mono text-sm'>
                   Real-time monitoring of active simulations
                   <br />
-                  <span className='text-[#00ff9d]'>REFRESH: <100ms</span>
+                  <span className='text-[#00ff9d]'>REFRESH: {'<'}100ms</span>
                 </p>
               </div>
 
