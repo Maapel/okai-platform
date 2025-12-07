@@ -72,7 +72,7 @@ export default function Home() {
             </div>
             <h3 className="text-lg font-bold text-white">AI-Native Workflow</h3>
             <p className="text-sm text-zinc-500 leading-relaxed">
-              We don't ban AI; we expect it. Can you guide Copilot/Cursor to fix a race condition in 5 minutes? That's the test.
+              We don't ban AI; we expect it. Repos come with <code className="text-zinc-300">.cursorrules</code> pre-configured. Can you guide Copilot/Cursor to fix a race condition in 5 minutes?
             </p>
           </div>
 
