@@ -29,45 +29,45 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="fixed top-0 w-full z-50 border-b border-white/5 bg-[#09090b]/80 backdrop-blur-xl h-16 flex items-center justify-between px-6">
-      <div className="flex items-center gap-4 font-semibold tracking-tight cursor-pointer">
-        <Image src="/okai_logo.svg" alt="OkAI Logo" width={40} height={40} className="rounded-md" />
-        <span className="text-white text-lg">OkAI Protocol</span>
-      </div>
+    <nav className="border-b border-zinc-800 bg-zinc-950/80 backdrop-blur-md sticky top-0 z-50">
+      <div className="max-w-7xl mx-auto px-6 h-14 flex items-center justify-between">
 
-      <div className="flex items-center gap-6 text-sm font-medium">
+        {/* BRANDING: Clean and Simple */}
+        <div className="flex items-center gap-2 font-semibold tracking-tight cursor-pointer">
+          <Image src="/okai_logo.svg" alt="OkAI" width={24} height={24} />
+          <span className="text-white">OkAI</span>
+        </div>
+
+        <div className="flex items-center gap-6 text-sm font-medium">
           <a href="#challenges" className="text-zinc-400 hover:text-white transition-colors hidden sm:block">
             Challenges
           </a>
-        <a href="/hire" className="text-zinc-400 hover:text-white transition-colors hidden sm:block">
-          For Startups
-        </a>
 
-        {user ? (
-          <div className="flex items-center gap-4">
-            <a href="/profile" className="flex items-center gap-2 text-zinc-300 hover:text-emerald-400 transition-colors">
-              {user.user_metadata.avatar_url && (
-                <img
-                  src={user.user_metadata.avatar_url}
-                  className="w-6 h-6 rounded-full border border-zinc-700"
-                  alt="Avatar"
-                />
-              )}
-              <span>Dashboard</span>
-            </a>
-            <button onClick={handleLogout} className="text-zinc-500 hover:text-white">
-              <LogOut size={16} />
+          {user ? (
+            <div className="flex items-center gap-4">
+              <a href="/profile" className="flex items-center gap-2 text-zinc-300 hover:text-emerald-400 transition-colors">
+                {user.user_metadata.avatar_url && (
+                  <img
+                    src={user.user_metadata.avatar_url}
+                    className="w-6 h-6 rounded-full border border-zinc-700"
+                    alt="Avatar"
+                  />
+                )}
+              </a>
+              <button onClick={handleLogout} className="text-zinc-500 hover:text-white">
+                <LogOut size={16} />
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={handleLogin}
+              className="flex items-center gap-2 text-white bg-zinc-800 hover:bg-zinc-700 px-4 py-1.5 rounded-full transition-all text-xs border border-zinc-700"
+            >
+              <Github size={14} />
+              <span>Sign In</span>
             </button>
-          </div>
-        ) : (
-          <button
-            onClick={handleLogin}
-            className="flex items-center gap-2 text-white bg-zinc-800 hover:bg-zinc-700 px-4 py-1.5 rounded-full transition-all text-xs border border-zinc-700"
-          >
-            <Github size={14} />
-            <span>Sign In</span>
-          </button>
-        )}
+          )}
+        </div>
       </div>
     </nav>
   );

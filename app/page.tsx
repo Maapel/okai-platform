@@ -78,38 +78,25 @@ export default function Home() {
 
       <Navbar />
 
-      <main className="flex-1 w-full max-w-7xl mx-auto px-6 py-20 pt-20">
+      <main className="flex-1 w-full max-w-7xl mx-auto px-6 py-16">
 
-        {/* HERO: Functional & Direct */}
+        {/* HERO: Grounded & Direct */}
         <div className="max-w-3xl mb-20">
           <h1 className="text-5xl font-bold text-white tracking-tight mb-6">
             Real-world engineering challenges.
           </h1>
           <p className="text-xl text-zinc-400 leading-relaxed mb-8">
-            OkAI is a verification protocol for software engineers.
-            Clone production-grade repositories, fix broken systems, and get a verified
-            <span className="text-emerald-500 font-medium mx-1.5">Velocity Rating</span>
-            based on your speed and code quality.
+            OkAI is the standard for proving engineering talent.
+            Fix broken production systems, optimize legacy code, and build a verified portfolio of your work.
           </p>
-          <div className="flex gap-4">
-            <button
-              onClick={handleLogin}
-              className="h-12 px-6 bg-white text-black font-semibold rounded-lg hover:bg-zinc-200 transition-all flex items-center gap-2"
-            >
-              Get Started <ArrowRight size={16} />
-            </button>
-            <a href="#challenges" className="h-12 px-6 flex items-center justify-center border border-zinc-800 text-zinc-300 font-medium rounded-lg hover:bg-zinc-900 transition-all">
-              Browse Challenges
-            </a>
-          </div>
         </div>
 
         <div className="grid lg:grid-cols-12 gap-12" id="challenges">
 
-          {/* LEFT COLUMN: Challenge Directory */}
+          {/* LEFT: Challenge Card */}
           <div className="lg:col-span-8 space-y-6">
 
-            {/* Status Bar (Only visible when active) */}
+            {/* Status Bar */}
             {status === 'active' && (
               <div className="flex items-center justify-between bg-emerald-500/10 border border-emerald-500/20 px-4 py-3 rounded-lg animate-in slide-in-from-top-2">
                 <div className="flex items-center gap-3">
@@ -117,7 +104,7 @@ export default function Home() {
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                     <Wifi size={16} className="text-emerald-500 relative" />
                   </div>
-                  <span className="text-xs font-mono text-emerald-400 font-bold tracking-wider">LISTENING FOR GIT PUSH...</span>
+                  <span className="text-xs font-mono text-emerald-400 font-bold tracking-wider">WAITING FOR PUSH...</span>
                 </div>
                 <div className="font-mono text-xl font-bold text-white tabular-nums">
                   {elapsed}
@@ -125,17 +112,7 @@ export default function Home() {
               </div>
             )}
 
-            <div className="flex items-center justify-between pb-4 border-b border-zinc-900">
-              <h2 className="text-lg font-semibold text-white flex items-center gap-2">
-                <Code2 size={20} className="text-emerald-500" />
-                Active Challenges
-              </h2>
-              <span className="text-xs text-zinc-500 font-mono">1 ACTIVE</span>
-            </div>
-
-            {/* CARD 1: The Chaos API */}
             <div className={`group bg-[#121214] border ${status === 'active' ? 'border-emerald-500/30' : 'border-zinc-800'} rounded-xl overflow-hidden transition-all relative`}>
-
               <div className="p-6 md:p-8">
                 <div className="flex justify-between items-start mb-4">
                   <div>
@@ -154,19 +131,19 @@ export default function Home() {
                 {/* ACTION AREA */}
                 {status === 'active' ? (
                   <div className="space-y-4">
-                    {/* Step 1: Fork Button */}
+                    {/* Step 1: Direct Fork Button */}
                     <div className="flex items-center gap-4 p-4 bg-zinc-900/50 rounded-lg border border-zinc-800">
                       <div className="flex-shrink-0 w-6 h-6 rounded-full bg-zinc-800 flex items-center justify-center text-xs font-bold text-white border border-zinc-700">1</div>
                       <div className="flex-1">
                         <p className="text-xs text-zinc-300 font-medium">Fork the Repository</p>
-                        <p className="text-[10px] text-zinc-500">Create your own copy to work on.</p>
+                        <p className="text-[10px] text-zinc-500">Create your copy on GitHub.</p>
                       </div>
                       <a
-                        href={repoUrl}
+                        href={`${repoUrl}/fork`}
                         target="_blank"
-                        className="shrink-0 px-4 py-2 bg-white text-black font-bold rounded text-xs hover:bg-zinc-200 transition-colors flex items-center gap-2"
+                        className="px-4 py-2 bg-white text-black font-bold rounded text-xs hover:bg-zinc-200 transition-colors flex items-center gap-2"
                       >
-                        <GitFork size={14} /> Fork Repo
+                        <GitFork size={14} /> Fork Now
                       </a>
                     </div>
 
@@ -194,7 +171,7 @@ export default function Home() {
                     className="w-full h-14 bg-white text-black font-bold rounded-lg hover:bg-zinc-200 transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {status === 'starting' ? (
-                      <><Loader2 className="animate-spin" /> Initializing Environment...</>
+                      <><Loader2 className="animate-spin" /> Initializing...</>
                     ) : (
                       <><Play size={18} fill="currentColor" /> Start Challenge</>
                     )}
@@ -202,57 +179,22 @@ export default function Home() {
                 )}
               </div>
             </div>
-
-            {/* CARD 2: Coming Soon */}
-            <div className="bg-zinc-900/20 border border-zinc-800/50 rounded-xl p-8 opacity-60 flex justify-between items-center cursor-not-allowed">
-              <div>
-                <h3 className="text-lg font-bold text-zinc-500">Next.js Server Actions Mutation</h3>
-                <p className="text-sm text-zinc-600 mt-1">Fix a race condition in a high-traffic voting component.</p>
-              </div>
-              <span className="text-xs border border-zinc-800 px-3 py-1.5 rounded-full text-zinc-500">
-                Coming Soon
-              </span>
-            </div>
           </div>
 
-          {/* RIGHT COLUMN: Sidebar */}
+          {/* RIGHT: Leaderboard */}
           <div className="lg:col-span-4 space-y-8">
-
-            {/* Leaderboard Widget */}
             <div className="bg-[#121214] border border-zinc-800 rounded-xl overflow-hidden">
               <div className="px-5 py-4 border-b border-zinc-800 flex justify-between items-center">
                 <h3 className="text-sm font-bold text-white">Recent Activity</h3>
                 <div className="flex items-center gap-2 text-[10px] text-zinc-500 font-mono uppercase">
-                  <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
+                  <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
                   Live
                 </div>
               </div>
               <Leaderboard />
             </div>
-
-            {/* "How it Works" - Simple Text */}
-            <div className="p-6">
-              <h4 className="text-xs font-bold text-zinc-500 uppercase tracking-wider mb-4">How it works</h4>
-              <ol className="space-y-6 relative border-l border-zinc-800 ml-1.5">
-                <li className="pl-6 relative">
-                  <span className="absolute -left-[5px] top-1.5 w-2.5 h-2.5 rounded-full bg-zinc-800 border-2 border-[#09090b]" />
-                  <h5 className="text-sm font-medium text-white">1. Clone the Repo</h5>
-                  <p className="text-xs text-zinc-500 mt-1">Work locally in VS Code. Use your own tools and AI agents.</p>
-                </li>
-                <li className="pl-6 relative">
-                  <span className="absolute -left-[5px] top-1.5 w-2.5 h-2.5 rounded-full bg-zinc-800 border-2 border-[#09090b]" />
-                  <h5 className="text-sm font-medium text-white">2. Fix the Issue</h5>
-                  <p className="text-xs text-zinc-500 mt-1">Solve the constraints listed in the README.</p>
-                </li>
-                <li className="pl-6 relative">
-                  <span className="absolute -left-[5px] top-1.5 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-[#09090b]" />
-                  <h5 className="text-sm font-medium text-white">3. Push to Main</h5>
-                  <p className="text-xs text-zinc-500 mt-1">Our system runs the test suite and verifies your solution instantly.</p>
-                </li>
-              </ol>
-            </div>
-
           </div>
+
         </div>
       </main>
     </div>
