@@ -2,7 +2,7 @@
 import { createClient } from '@/utils/supabase/client';
 import Leaderboard from '@/components/Leaderboard';
 import Navbar from '@/components/Navbar';
-import { Terminal, ArrowRight, Code2, GitFork, Trophy, Clock, Copy, Check } from 'lucide-react';
+import { Terminal, ArrowRight, Zap, Cpu, Bot, TrendingUp, Copy, Check } from 'lucide-react';
 import { useState } from 'react';
 
 export default function Home() {
@@ -27,135 +27,145 @@ export default function Home() {
 
       <Navbar />
 
-      <main className="flex-1 w-full max-w-7xl mx-auto px-6 py-20">
+      <main className="flex-1 w-full max-w-7xl mx-auto px-6 py-24">
 
-        {/* HERO: Direct and Clear */}
-        <div className="max-w-3xl mb-24">
-          <h1 className="text-5xl sm:text-6xl font-bold text-white tracking-tight mb-6">
-            Real-world engineering challenges.
+        {/* HERO: Velocity Focus */}
+        <div className="max-w-4xl mb-32">
+          <div className="inline-flex items-center gap-2 px-3 py-1 mb-8 rounded-full bg-emerald-500/5 border border-emerald-500/10 text-emerald-500 text-xs font-medium uppercase tracking-wider">
+            <Zap size={12} />
+            <span>AI-Native Engineering Protocol</span>
+          </div>
+
+          <h1 className="text-6xl md:text-7xl font-bold text-white tracking-tight mb-8 leading-[1.0]">
+            Speed is the <br />
+            <span className="text-zinc-600">new signal.</span>
           </h1>
-          <p className="text-xl text-zinc-400 leading-relaxed mb-8">
-            OkAI is a platform for practicing production-grade development.
-            Clone repositories, fix broken systems, and verify your skills with automated test suites.
+
+          <p className="text-xl text-zinc-400 leading-relaxed mb-10 max-w-2xl">
+            Most platforms test if you can write code from scratch.
+            <strong className="text-white font-medium"> OkAI tests if you can ship. </strong>
+            <br />
+            Bring your own Agent. Fix broken production systems. Get a certified
+            <span className="text-emerald-500 font-mono mx-2">Velocity Rating</span>
+            that proves you're ready for the big leagues.
           </p>
+
           <div className="flex gap-4">
             <button
               onClick={handleLogin}
-              className="h-12 px-6 bg-white text-black font-semibold rounded-lg hover:bg-zinc-200 transition-all"
+              className="h-14 px-8 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-lg transition-all flex items-center gap-2"
             >
-              Get Started
+              Start Calibration
+              <ArrowRight size={18} />
             </button>
-            <a href="#challenges" className="h-12 px-6 flex items-center justify-center border border-zinc-800 text-zinc-300 font-medium rounded-lg hover:bg-zinc-900 transition-all">
-              View Challenges
+            <a href="#challenges" className="h-14 px-8 flex items-center justify-center border border-zinc-800 text-zinc-300 font-medium rounded-lg hover:bg-zinc-900 transition-all">
+              View Active Bounties
             </a>
           </div>
         </div>
 
-        <div className="grid lg:grid-cols-12 gap-12" id="challenges">
+        {/* COMPARISON / FEATURES */}
+        <div className="grid md:grid-cols-3 gap-8 border-t border-zinc-900 pt-16 mb-32">
+          <div className="space-y-4">
+            <div className="w-10 h-10 bg-zinc-900 rounded-lg flex items-center justify-center border border-zinc-800">
+              <Bot size={20} className="text-white" />
+            </div>
+            <h3 className="text-lg font-bold text-white">AI-Native Workflow</h3>
+            <p className="text-sm text-zinc-500 leading-relaxed">
+              We don't ban AI; we expect it. Can you guide Copilot/Cursor to fix a race condition in 5 minutes? That's the test.
+            </p>
+          </div>
 
-          {/* LEFT COLUMN: The Challenge List */}
-          <div className="lg:col-span-8 space-y-8">
-            <h2 className="text-xl font-semibold text-white flex items-center gap-2">
-              <Code2 size={20} className="text-emerald-500" />
-              Active Challenges
-            </h2>
+          <div className="space-y-4">
+            <div className="w-10 h-10 bg-zinc-900 rounded-lg flex items-center justify-center border border-zinc-800">
+              <TrendingUp size={20} className="text-white" />
+            </div>
+            <h3 className="text-lg font-bold text-white">Velocity Rating (VR)</h3>
+            <p className="text-sm text-zinc-500 leading-relaxed">
+              Your "MMR" for engineering. Based on time-to-merge, test coverage, and code stability. Higher VR = Higher Hireability.
+            </p>
+          </div>
 
-            {/* Challenge Card 01 */}
-            <div className="bg-[#121214] border border-zinc-800 rounded-xl overflow-hidden hover:border-zinc-700 transition-colors">
-              <div className="p-6 md:p-8">
-                <div className="flex justify-between items-start mb-4">
-                  <div className="space-y-1">
-                    <h3 className="text-lg font-bold text-white">API Rate Limiter & Resilience</h3>
-                    <div className="flex items-center gap-3 text-xs text-zinc-500 font-medium">
-                      <span className="text-emerald-400">Node.js</span>
-                      <span>•</span>
-                      <span>Backend</span>
-                      <span>•</span>
-                      <span>Hard</span>
-                    </div>
-                  </div>
-                  <div className="flex flex-col items-end gap-1">
-                    <span className="text-xs font-mono text-zinc-500">ID: CHAOS-01</span>
-                  </div>
+          <div className="space-y-4">
+            <div className="w-10 h-10 bg-zinc-900 rounded-lg flex items-center justify-center border border-zinc-800">
+              <Cpu size={20} className="text-white" />
+            </div>
+            <h3 className="text-lg font-bold text-white">Production Incidents</h3>
+            <p className="text-sm text-zinc-500 leading-relaxed">
+              No "invert a binary tree." You'll face rate limits, memory leaks, and dependency hell. Just like the real job.
+            </p>
+          </div>
+        </div>
+
+        {/* CHALLENGE & LEADERBOARD SECTION */}
+        <div className="grid lg:grid-cols-12 gap-16" id="challenges">
+
+          {/* Active Challenge */}
+          <div className="lg:col-span-7 space-y-6">
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <h2 className="text-sm font-bold text-zinc-400 uppercase tracking-widest">Active Calibration</h2>
+            </div>
+
+            <div className="bg-[#121214] border border-zinc-800 rounded-xl p-8 relative overflow-hidden group">
+              <div className="absolute top-0 right-0 p-4 opacity-50 group-hover:opacity-100 transition-opacity">
+                <span className="text-xs font-mono text-emerald-500 border border-emerald-500/20 bg-emerald-500/10 px-2 py-1 rounded">
+                  VR WEIGHT: 2500
+                </span>
+              </div>
+
+              <h3 className="text-2xl font-bold text-white mb-2">Resilience: The Chaos API</h3>
+              <div className="flex gap-3 text-xs text-zinc-500 font-mono mb-6">
+                <span>NODE.JS</span>
+                <span>•</span>
+                <span>BACKEND</span>
+                <span>•</span>
+                <span>EST: 30M</span>
+              </div>
+
+              <p className="text-zinc-400 leading-relaxed mb-8">
+                Your mission: Write a client that ingests 100% of data from a intentionally flaky API.
+                It throws 500s, 429s, and silent errors. If your script crashes, you fail.
+              </p>
+
+              {/* Terminal Block */}
+              <div className="bg-black rounded-lg border border-zinc-800 p-4 font-mono text-xs mb-6 group/term cursor-pointer hover:border-zinc-700 transition-colors" onClick={copyCommand}>
+                <div className="flex justify-between text-zinc-600 mb-2 group-hover/term:text-emerald-500 transition-colors">
+                  <span>bash</span>
+                  <span>{copied ? "Copied" : "Copy"}</span>
                 </div>
-
-                <p className="text-sm text-zinc-400 leading-relaxed mb-6">
-                  A legacy API client is crashing under load. It fails to handle 429 errors and "Silent Failure" 200 OK responses. Your task is to refactor the ingestion script to implement exponential backoff and 100% data reliability.
-                </p>
-
-                {/* Quick Start Bar */}
-                <div className="flex flex-col md:flex-row gap-4 items-start md:items-center bg-black/40 rounded-lg p-3 border border-zinc-900">
-                  <div className="flex-1 font-mono text-xs text-zinc-400 truncate w-full">
-                    <span className="text-zinc-600 select-none mr-2">$</span>
-                    git clone https://github.com/Maapel/okai-challenge-01.git
-                  </div>
-                  <button
-                    onClick={copyCommand}
-                    className="shrink-0 flex items-center gap-2 text-xs font-medium text-emerald-500 hover:text-emerald-400"
-                  >
-                    {copied ? <Check size={14} /> : <Copy size={14} />}
-                    {copied ? "Copied" : "Copy Clone Command"}
-                  </button>
+                <div className="space-y-1 text-zinc-300">
+                  <p>$ git clone https://github.com/Maapel/okai-challenge-01.git</p>
+                  <p>$ cd okai-challenge-01</p>
+                  <p>$ npm install && npm test</p>
                 </div>
               </div>
 
-              <div className="bg-zinc-900/50 px-6 md:px-8 py-3 border-t border-zinc-800 flex justify-between items-center text-xs text-zinc-500">
-                <div className="flex items-center gap-4">
-                  <span className="flex items-center gap-1.5"><Clock size={14} /> ~45 mins</span>
-                  <span className="flex items-center gap-1.5"><GitFork size={14} /> 128 forks</span>
-                </div>
-                <button onClick={handleLogin} className="text-white hover:underline">
-                  View Details {'>'}
+              <div className="flex gap-4">
+                <button
+                  onClick={handleLogin}
+                  className="px-6 py-3 bg-white text-black font-semibold rounded hover:bg-zinc-200 transition-all text-sm"
+                >
+                  Accept Challenge
                 </button>
               </div>
             </div>
+          </div>
 
-            {/* Placeholder for Challenge 02 (To show it's a list) */}
-            <div className="bg-[#121214] border border-zinc-800/50 rounded-xl p-8 opacity-50 grayscale hover:opacity-75 hover:grayscale-0 transition-all cursor-not-allowed">
-              <div className="flex justify-between items-start mb-2">
-                <h3 className="text-lg font-bold text-white">Next.js Server Actions Mutation</h3>
-                <span className="text-xs border border-zinc-700 px-2 py-1 rounded text-zinc-500">Coming Soon</span>
-              </div>
-              <p className="text-sm text-zinc-500">
-                Fix a race condition in a high-traffic voting component using Optimistic UI and Supabase Realtime.
-              </p>
+          {/* Live Leaderboard */}
+          <div className="lg:col-span-5 space-y-6">
+            <div className="flex items-center justify-between mb-2">
+              <h2 className="text-sm font-bold text-zinc-400 uppercase tracking-widest">Global Velocity Rankings</h2>
+              <div className="text-[10px] text-zinc-600 font-mono">LIVE</div>
+            </div>
+
+            <Leaderboard />
+
+            <div className="p-4 bg-zinc-900/30 border border-zinc-800 rounded-lg text-xs text-zinc-500 text-center">
+              <p>Top 1% VR holders are scouted by partner startups weekly.</p>
             </div>
           </div>
 
-          {/* RIGHT COLUMN: Sidebar Stats */}
-          <div className="lg:col-span-4 space-y-8">
-
-            {/* Leaderboard Widget */}
-            <div>
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-sm font-semibold text-white flex items-center gap-2">
-                  <Trophy size={16} className="text-emerald-500" />
-                  Recent Completions
-                </h2>
-              </div>
-              <Leaderboard />
-            </div>
-
-            {/* Info Card */}
-            <div className="bg-zinc-900/30 border border-zinc-800 rounded-xl p-6">
-              <h3 className="text-sm font-bold text-white mb-3">How it works</h3>
-              <ol className="space-y-4 text-sm text-zinc-400">
-                <li className="flex gap-3">
-                  <span className="flex items-center justify-center w-5 h-5 rounded-full bg-zinc-800 text-xs font-medium text-white shrink-0">1</span>
-                  <span>Clone the repository locally. Use your own IDE and tools.</span>
-                </li>
-                <li className="flex gap-3">
-                  <span className="flex items-center justify-center w-5 h-5 rounded-full bg-zinc-800 text-xs font-medium text-white shrink-0">2</span>
-                  <span>Solve the problem constraints listed in the README.</span>
-                </li>
-                <li className="flex gap-3">
-                  <span className="flex items-center justify-center w-5 h-5 rounded-full bg-zinc-800 text-xs font-medium text-white shrink-0">3</span>
-                  <span>Push to main. Our GitHub Action runs the test suite instantly.</span>
-                </li>
-              </ol>
-            </div>
-
-          </div>
         </div>
       </main>
     </div>
