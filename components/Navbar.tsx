@@ -29,10 +29,10 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="fixed top-0 w-full z-50 border-b border-white/5 bg-[#09090b]/80 backdrop-blur-xl h-14 flex items-center justify-between px-6">
-      <div className="flex items-center gap-3 font-semibold tracking-tight cursor-pointer">
-        <Image src="/okai_logo.svg" alt="OkAI Logo" width={24} height={24} />
-        <span className="text-white">OkAI Protocol</span>
+    <nav className="fixed top-0 w-full z-50 border-b border-white/5 bg-[#09090b]/80 backdrop-blur-xl h-16 flex items-center justify-between px-6">
+      <div className="flex items-center gap-4 font-semibold tracking-tight cursor-pointer">
+        <Image src="/okai_logo.svg" alt="OkAI Logo" width={40} height={40} className="rounded-md" />
+        <span className="text-white text-lg">OkAI Protocol</span>
       </div>
 
       <div className="flex items-center gap-6 text-sm font-medium">

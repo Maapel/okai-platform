@@ -78,7 +78,7 @@ export default function Home() {
 
       <Navbar />
 
-      <main className="flex-1 w-full max-w-7xl mx-auto px-6 py-16">
+      <main className="flex-1 w-full max-w-7xl mx-auto px-6 py-20 pt-20">
 
         {/* HERO: Functional & Direct */}
         <div className="max-w-3xl mb-20">
