@@ -2,19 +2,42 @@
 import { createClient } from '@/utils/supabase/client';
 import Leaderboard from '@/components/Leaderboard';
 import Navbar from '@/components/Navbar';
-import { Code2, GitFork, Trophy, Clock, Copy, Check, ArrowRight, Lock, Loader2, Play } from 'lucide-react';
-import { useState } from 'react';
+import { Terminal, Code2, GitFork, Trophy, Clock, Copy, Check, ArrowRight, Play, Loader2, Wifi } from 'lucide-react';
+import { useState, useEffect } from 'react';
 
 export default function Home() {
   const supabase = createClient();
   const [status, setStatus] = useState<'idle' | 'starting' | 'active'>('idle');
   const [repoUrl, setRepoUrl] = useState('');
+  const [userHandle, setUserHandle] = useState('');
   const [copied, setCopied] = useState(false);
+
+  // TIMER STATE
+  const [startTime, setStartTime] = useState<number | null>(null);
+  const [elapsed, setElapsed] = useState('00:00');
+
+  // 1. Live Timer Logic
+  useEffect(() => {
+    if (!startTime) return;
+    const interval = setInterval(() => {
+      const seconds = Math.floor((Date.now() - startTime) / 1000);
+      const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+      const s = (seconds % 60).toString().padStart(2, '0');
+      setElapsed(`${m}:${s}`);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [startTime]);
+
+  const handleLogin = async () => {
+    await supabase.auth.signInWithOAuth({
+      provider: 'github',
+      options: { redirectTo: `${location.origin}/auth/callback` }
+    });
+  };
 
   const handleStart = async () => {
     setStatus('starting');
 
-    // 1. Check Auth
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
       await supabase.auth.signInWithOAuth({
@@ -24,13 +47,16 @@ export default function Home() {
       return;
     }
 
-    // 2. Start Timer API
+    // Capture username for the "Smart Clone" command
+    setUserHandle(user.user_metadata.user_name);
+
     try {
       const res = await fetch('/api/challenge/start', { method: 'POST' });
       const data = await res.json();
 
       if (data.repoUrl) {
         setRepoUrl(data.repoUrl);
+        setStartTime(Date.now()); // Start local timer
         setStatus('active');
       }
     } catch (e) {
@@ -40,7 +66,9 @@ export default function Home() {
   };
 
   const copyCommand = () => {
-    navigator.clipboard.writeText(`git clone ${repoUrl}`);
+    // SMART CLONE: We predict their fork URL so they don't clone the wrong one
+    const forkUrl = `https://github.com/${userHandle}/okai-challenge-01.git`;
+    navigator.clipboard.writeText(`git clone ${forkUrl}`);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -80,6 +108,23 @@ export default function Home() {
 
           {/* LEFT COLUMN: Challenge Directory */}
           <div className="lg:col-span-8 space-y-6">
+
+            {/* Status Bar (Only visible when active) */}
+            {status === 'active' && (
+              <div className="flex items-center justify-between bg-emerald-500/10 border border-emerald-500/20 px-4 py-3 rounded-lg animate-in slide-in-from-top-2">
+                <div className="flex items-center gap-3">
+                  <div className="relative">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <Wifi size={16} className="text-emerald-500 relative" />
+                  </div>
+                  <span className="text-xs font-mono text-emerald-400 font-bold tracking-wider">LISTENING FOR GIT PUSH...</span>
+                </div>
+                <div className="font-mono text-xl font-bold text-white tabular-nums">
+                  {elapsed}
+                </div>
+              </div>
+            )}
+
             <div className="flex items-center justify-between pb-4 border-b border-zinc-900">
               <h2 className="text-lg font-semibold text-white flex items-center gap-2">
                 <Code2 size={20} className="text-emerald-500" />
@@ -89,15 +134,12 @@ export default function Home() {
             </div>
 
             {/* CARD 1: The Chaos API */}
-            <div className="group bg-[#121214] border border-zinc-800 rounded-xl overflow-hidden hover:border-zinc-700 transition-all relative">
+            <div className={`group bg-[#121214] border ${status === 'active' ? 'border-emerald-500/30' : 'border-zinc-800'} rounded-xl overflow-hidden transition-all relative`}>
 
-              {/* Card Content */}
               <div className="p-6 md:p-8">
                 <div className="flex justify-between items-start mb-4">
                   <div>
-                    <h3 className="text-xl font-bold text-white mb-2 group-hover:text-emerald-400 transition-colors">
-                      API Rate Limiter & Resilience
-                    </h3>
+                    <h3 className="text-xl font-bold text-white mb-2">API Rate Limiter & Resilience</h3>
                     <div className="flex gap-3 text-xs text-zinc-500 font-mono">
                       <span className="text-emerald-400">Node.js</span> • <span>Backend</span> • <span>Hard</span>
                     </div>
@@ -109,42 +151,41 @@ export default function Home() {
                   A legacy API client is failing. It returns 429s and silent failures. Refactor it to handle backoff strategies and ensure 100% data integrity.
                 </p>
 
-                {/* THE ACTION AREA */}
+                {/* ACTION AREA */}
                 {status === 'active' ? (
-                  <div className="bg-zinc-900/50 rounded-lg border border-zinc-800 p-4 space-y-4 animate-in fade-in slide-in-from-top-2">
-                    <div className="flex items-center justify-between text-xs text-zinc-400">
-                      <span className="text-emerald-500 flex items-center gap-2">
-                        <span className="relative flex h-2 w-2">
-                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                          <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                        </span>
-                        Timer Running...
-                      </span>
-                      <span>Step 1: Fork & Clone</span>
-                    </div>
-
-                    <div className="flex gap-3">
-                      <div
-                        onClick={copyCommand}
-                        className="flex-1 bg-black border border-zinc-700 rounded flex items-center px-3 py-3 cursor-pointer hover:border-emerald-500/50 transition-colors"
-                      >
-                        <span className="text-emerald-500 mr-3">$</span>
-                        <code className="flex-1 font-mono text-xs text-zinc-300 truncate">
-                          git clone {repoUrl}
-                        </code>
-                        {copied ? <Check size={14} className="text-emerald-500"/> : <Copy size={14} />}
+                  <div className="space-y-4">
+                    {/* Step 1: Fork Button */}
+                    <div className="flex items-center gap-4 p-4 bg-zinc-900/50 rounded-lg border border-zinc-800">
+                      <div className="flex-shrink-0 w-6 h-6 rounded-full bg-zinc-800 flex items-center justify-center text-xs font-bold text-white border border-zinc-700">1</div>
+                      <div className="flex-1">
+                        <p className="text-xs text-zinc-300 font-medium">Fork the Repository</p>
+                        <p className="text-[10px] text-zinc-500">Create your own copy to work on.</p>
                       </div>
                       <a
                         href={repoUrl}
                         target="_blank"
-                        className="px-4 bg-white text-black font-bold rounded flex items-center text-xs hover:bg-zinc-200"
+                        className="shrink-0 px-4 py-2 bg-white text-black font-bold rounded text-xs hover:bg-zinc-200 transition-colors flex items-center gap-2"
                       >
-                        Open Repo <ArrowRight size={14} className="ml-2"/>
+                        <GitFork size={14} /> Fork Repo
                       </a>
                     </div>
-                    <p className="text-[10px] text-zinc-500">
-                      *Important: <strong>Fork</strong> the repository, then push to your fork's main branch to trigger the Judge.
-                    </p>
+
+                    {/* Step 2: Smart Clone */}
+                    <div className="flex items-center gap-4 p-4 bg-zinc-900/50 rounded-lg border border-zinc-800">
+                      <div className="flex-shrink-0 w-6 h-6 rounded-full bg-zinc-800 flex items-center justify-center text-xs font-bold text-white border border-zinc-700">2</div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs text-zinc-300 font-medium mb-2">Clone your Fork</p>
+                        <div
+                          onClick={copyCommand}
+                          className="bg-black border border-zinc-700 rounded px-3 py-2 flex items-center justify-between cursor-pointer group/cmd hover:border-emerald-500/50 transition-colors"
+                        >
+                          <code className="text-xs font-mono text-emerald-500 truncate mr-4">
+                            git clone https://github.com/{userHandle}/okai-challenge-01.git
+                          </code>
+                          {copied ? <Check size={14} className="text-emerald-500 flex-shrink-0"/> : <Copy size={14} className="text-zinc-600 group-hover/cmd:text-white flex-shrink-0"/>}
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 ) : (
                   <button
@@ -162,7 +203,7 @@ export default function Home() {
               </div>
             </div>
 
-            {/* CARD 2: Coming Soon (To show the platform scale) */}
+            {/* CARD 2: Coming Soon */}
             <div className="bg-zinc-900/20 border border-zinc-800/50 rounded-xl p-8 opacity-60 flex justify-between items-center cursor-not-allowed">
               <div>
                 <h3 className="text-lg font-bold text-zinc-500">Next.js Server Actions Mutation</h3>
