@@ -34,9 +34,9 @@ export default function Navbar() {
       <div className="flex items-center gap-3 font-bold tracking-tight cursor-pointer group">
         <div className="relative">
           <div className="absolute -inset-1 bg-emerald-500/20 rounded-full blur opacity-0 group-hover:opacity-100 transition duration-500"></div>
-          <Image src="/okai_logo.svg" alt="OkAI Logo" width={32} height={32} className="rounded-lg relative" />
+          <Image src="/okai_icon.svg" alt="OkAI Logo" width={32} height={32} className="rounded-lg relative" />
         </div>
-        <span className="text-white text-lg tracking-tighter">OkAI</span>
+        <Image src="/okai_text.png" alt="OkAI" width={70} height={20} className="relative opacity-90 group-hover:opacity-100 transition-opacity" />
       </div>
 
       <div className="flex items-center gap-8 text-sm font-medium">
